@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 type Server struct {
@@ -22,7 +23,20 @@ func main() {
 	}
 	log.Printf("Listening on %s\n", addr)
 
-	var opts []grpc.ServerOption
+	opts := []grpc.ServerOption{}
+
+	tls := true
+
+	if tls {
+		certFile := "ssl/server.crt"
+		keyFile := "ssl/server.pem"
+		creds, err := credentials.NewClientTLSFromFile(certFile, keyFile)
+
+		if err != nil {
+			log.Fatalf("Failed loading Server certificates: %v\n", err)
+		}
+		opts = append(opts, grpc.Creds(creds))
+	}
 
 	grpcServer := grpc.NewServer(opts...)
 	pb.RegisterGreetServiceServer(grpcServer, &Server{})
