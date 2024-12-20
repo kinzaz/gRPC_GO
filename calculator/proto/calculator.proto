@@ -5,7 +5,9 @@ package calculator;
 option go_package = "grpc-go/calculator/proto";
 
 import "sum.proto";
+import "sqrt.proto";
 
 service CalculatorService {
   rpc Sum (SumRequest) returns (SumResponse);
+  rpc Sqrt (SqrtRequest) returns (SqrtResponse);
 }
